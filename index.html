@@ -655,8 +655,9 @@ section { padding: 6rem 4rem; }
 
 @media (max-width: 900px) {
   .cta-tag { font-size: 0.68rem; padding: 0.85rem 1.1rem; }
-  .cta-tag-row-1 .cta-tag:nth-child(odd)  { margin-bottom: 12px; }
-  .cta-tag-row-1 .cta-tag:nth-child(even) { margin-bottom: -4px; }
+  .cta-tag-row-1 .cta-tag:nth-child(odd),
+  .cta-tag-row-1 .cta-tag:nth-child(even) { margin-bottom: 0; }
+  .cta-tag-row-1 { align-items: center; row-gap: 0.9rem; }
 }
 
 /* ===================== CONTACT ===================== */
@@ -900,6 +901,7 @@ section { padding: 6rem 4rem; }
 @media (max-width: 600px) {
   .bs-c1, .bs-c3 { display: none; }
   #brand-scene { min-height: 300px; }
+  .bs-title { font-size: clamp(2rem, 13vw, 9rem); }
 }
 
 /* ===================== FOOTER ===================== */
@@ -1319,6 +1321,8 @@ nav.scrolled {
 
 @media (max-width: 900px) {
   nav { padding: 1rem 1.5rem; }
+  .nav-logo { font-size: 1.5rem; }
+  .nav-cta { padding: 0.5rem 1.1rem; font-size: 0.72rem; }
   .nav-links { display: none; }
   #hero { padding: 7rem 1.5rem 4rem; }
   .hero-cube-canvas { display: none; }
@@ -1354,6 +1358,14 @@ nav.scrolled {
   .service-row-tags { grid-area: tags; text-align: left; }
   .service-row-meta { grid-area: meta; text-align: right; }
   .about-pillars { grid-template-columns: 1fr; gap: 2rem; }
+  .contact-cube-wrap { display: none; }
+  .cases-header-right { text-align: left; max-width: none; }
+  .cases-header-right .section-sub { text-align: left; }
+  .team-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .form-row { grid-template-columns: 1fr; }
 }
 
 /* ======= CASE STUDY MODALS ======= */
@@ -1836,10 +1848,10 @@ nav.scrolled {
           <span>Typical response: &lt; 4 hours</span>
         </div>
       </div>
-      <div class="location-badge" aria-label="Office location: Alexandria, Egypt">
+      <div class="location-badge" aria-label="Office location: 5830 E 2nd St, Ste 7000 #35145, Casper, Wyoming 82609, US">
         <span aria-hidden="true">📍</span>
         <div>
-          <div style="color:var(--text);font-size:0.82rem">Alexandria, Egypt</div>
+          <div style="color:var(--text);font-size:0.82rem">5830 E 2nd St, Ste 7000 #35145, Casper, Wyoming 82609, US</div>
         </div>
       </div>
 
