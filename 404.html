@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Page Not Found — Intellocube</title>
+<meta name="robots" content="noindex"/>
+<link rel="icon" type="image/png" href="assets/img/logo-header.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+@font-face { font-family: 'Nexa'; src: url('assets/fonts/Nexa-Light.ttf') format('truetype'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'Nexa'; src: url('assets/fonts/Nexa-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Nunito', 'Avenir Next', 'Trebuchet MS', sans-serif;
+  background: radial-gradient(circle at 30% 20%, #402060 0%, #341B4B 55%, #2C1840 100%);
+  color: #F0EAF8; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  padding: 2rem;
+}
+.wrap { max-width: 480px; display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
+.code {
+  font-family: 'Nexa', var(--font-body); font-weight: 700;
+  font-size: clamp(3.5rem, 10vw, 6rem); line-height: 1;
+  background: linear-gradient(90deg, #3997D3, #E40E74, #FCE800);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+h1 { font-family: 'Nexa', var(--font-body); font-weight: 700; font-size: 1.5rem; color: #fff; }
+p { color: #C9B8E0; font-size: 0.95rem; line-height: 1.7; }
+.home-btn {
+  margin-top: 0.6rem; display: inline-block; text-decoration: none;
+  background: #E40E74; color: #fff; font-weight: 700; font-size: 0.85rem;
+  letter-spacing: 0.05em; padding: 0.8rem 1.8rem; border-radius: 99px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.home-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(228,14,116,0.35); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="code">404</div>
+    <h1>This page went unannotated.</h1>
+    <p>We couldn't find the page you were looking for. It may have moved, or the link might be out of date.</p>
+    <a class="home-btn" href="/">← Back to Intellocube</a>
+  </div>
+</body>
+</html>

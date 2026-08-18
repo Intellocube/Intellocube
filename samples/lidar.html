@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>LiDAR + Camera Fusion — Samples — Intellocube</title>
+<meta name="description" content="High-precision 3D LiDAR point cloud annotation for autonomous driving perception systems."/>
+<link rel="icon" type="image/png" href="../assets/img/logo-header.png"/>
+<meta property="og:type" content="article"/>
+<meta property="og:title" content="LiDAR + Camera Fusion — Samples — Intellocube"/>
+<meta property="og:description" content="High-precision 3D LiDAR point cloud annotation for autonomous driving perception systems."/>
+<meta property="og:image" content="https://intellocube.com/assets/img/logo-header.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ===================== NEXA FONT (embedded) ===================== */
+@font-face {
+  font-family: 'Nexa';
+  src: url('../assets/fonts/Nexa-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nexa';
+  src: url('../assets/fonts/Nexa-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nexa', 'Nunito', 'Avenir Next', 'Trebuchet MS', sans-serif; background: #341B4B; color: #F0EAF8; min-height: 100vh; line-height: 1.6; }
+
+/* ── Top bar ── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(30,27,75,0.97); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0.9rem 5rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-left { display: flex; align-items: center; gap: 0.8rem; }
+.back-btn {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+  color: #fff; padding: 0.4rem 1rem; border-radius: 99px;
+  font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; transition: background 0.2s;
+  display: inline-block; text-decoration: none;
+}
+.back-btn:hover { background: rgba(255,255,255,0.12); }
+.sep { color: rgba(255,255,255,0.2); }
+.page-title { font-size: 0.8rem; font-weight: 700; color: #fff; }
+.topbar-tag { font-size: 0.76rem; letter-spacing: 0.15em; text-transform: uppercase; color: #E40E74; }
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(135deg, #402060 0%, #341B4B 100%);
+  padding: 5rem 5rem 4rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.hero h1 { font-size: clamp(2.4rem, 4vw, 3.5rem); font-weight: 800; color: #fff; margin-bottom: 1rem; line-height: 1.08; }
+.hero p { color: #DCD3EE; font-size: 1.08rem; line-height: 1.85; max-width: 640px; }
+
+/* ── Layout ── */
+.page-wrap { max-width: 1440px; margin: 0 auto; padding: 4rem 5rem; display: flex; flex-direction: column; gap: 5.5rem; }
+
+/* ── Featured case (LiDAR) ── */
+.featured {
+  display: grid; grid-template-columns: minmax(340px, 460px) 1fr; gap: 4rem; align-items: start;
+}
+.featured-img {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(57,151,211,0.18);
+  border-radius: 16px; padding: 1.4rem; position: sticky; top: 100px;
+}
+.featured-img img {
+  width: 100%; border-radius: 10px;
+  border: 1px solid rgba(57,151,211,0.18);
+  display: block; box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+}
+.featured-img img + img { margin-top: 1.2rem; }
+.img-caption { font-size: 0.85rem; color: rgba(255,255,255,0.42); margin-top: 0.7rem; line-height: 1.65; }
+.featured-body { display: flex; flex-direction: column; gap: 1.8rem; padding-top: 0.4rem; max-width: 64ch; }
+.tag {
+  display: inline-block; font-size: 0.76rem; letter-spacing: 0.16em;
+  text-transform: uppercase; border: 1px solid; border-radius: 99px;
+  padding: 0.32rem 0.9rem; width: fit-content; font-weight: 700;
+}
+.featured-body h2 { font-size: 1.9rem; font-weight: 800; color: #fff; line-height: 1.2; }
+.featured-body .lead { font-size: 1.05rem; color: #DCD3EE; line-height: 1.8; }
+.detail-block { display: flex; flex-direction: column; gap: 0.45rem; }
+.detail-lbl { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+.detail-val { font-size: 0.98rem; color: #DCD3EE; line-height: 1.85; }
+.divider { height: 1px; background: rgba(255,255,255,0.1); }
+.metric-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.metric {
+  background: rgba(57,151,211,0.08); border: 1px solid rgba(57,151,211,0.2);
+  border-radius: 10px; padding: 0.9rem 1.4rem;
+}
+.metric-val { font-size: 1.5rem; font-weight: 800; color: #3997D3; line-height: 1; }
+.metric-lbl { font-size: 0.73rem; color: #DCD3EE; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem; }
+
+/* ── Cases grid ── */
+.section-heading {
+  font-size: 1.18rem; font-weight: 800; color: #fff;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  padding-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 1.8rem;
+}
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+.card {
+  background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 1.8rem;
+  display: flex; flex-direction: column; gap: 0.9rem;
+  transition: background 0.2s, transform 0.25s, box-shadow 0.25s;
+  cursor: default;
+}
+.card:hover { background: rgba(255,255,255,0.05); transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
+.card h3 { font-size: 1.12rem; font-weight: 700; color: #fff; line-height: 1.3; }
+.card p { font-size: 0.92rem; color: #DCD3EE; line-height: 1.85; flex: 1; }
+.card-metric {
+  display: inline-block; font-size: 0.82rem; font-weight: 700;
+  padding: 0.3rem 0.85rem; border: 1px solid; border-radius: 99px;
+  width: fit-content; margin-top: auto;
+}
+
+@media (max-width: 900px) {
+  .topbar, .hero, .page-wrap { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .featured { grid-template-columns: 1fr; gap: 2rem; }
+  .featured-img { position: static; }
+  .featured-body { max-width: none; }
+  .hero { padding-top: 3rem; padding-bottom: 2.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back-btn" href="index.html">← All Samples</a>
+    <span class="sep">·</span>
+    <span class="page-title">LiDAR + Camera Fusion</span>
+  </div>
+  <span class="topbar-tag">Intellocube · Data Annotation</span>
+</div>
+
+<div class="hero">
+  <h1>Samples</h1>
+  <p>Example annotation projects spanning autonomous vehicles, healthcare, NLP, e-commerce, and robotics — built to demonstrate our methodology and QA process.</p>
+  <p style="color:#C9B8E0;font-size:0.92rem;font-style:italic;margin-top:0.85rem;max-width:640px;">Due to client confidentiality agreements, we're unable to share our actual case studies. Everything below is a self-directed project using publicly available data, annotated in-house to show how we work.</p>
+</div>
+
+<div class="page-wrap">
+
+<div id="proj-lidar">
+    <p class="section-heading">Featured Project</p>
+    <div class="featured">
+      <div class="featured-img">
+        <img src="../assets/img/lidar-1.jpg"/>
+        <p class="img-caption">Global 3D viewport showcasing multi-class object detection and cuboid annotation on high-density point cloud frames.</p>
+        <img src="../assets/img/lidar-2.jpg"/>
+        <p class="img-caption">Orthographic multi-view alignment ensuring X, Y, Z dimensional accuracy and tight bounding box margins to eliminate background noise.</p>
+      </div>
+      <div class="featured-body">
+        <span class="tag" style="background:rgba(57,151,211,0.1);border-color:rgba(57,151,211,0.3);color:#3997D3;">Autonomous Vehicles</span>
+        <h2>High-Precision 3D LiDAR Point Cloud Annotation for Autonomous Driving Systems</h2>
+        <p class="lead">Annotating .pcd point cloud data with zero margin for error — accurate 3D object detection across sparse, complex three-dimensional space for autonomous vehicle perception stacks.</p>
+        <div class="divider"></div>
+        <div class="detail-block">
+          <span class="detail-lbl">The Challenge</span>
+          <span class="detail-val">Annotating 3D point cloud data (via .pcd files) presents unique spatial challenges compared to standard 2D images. Autonomous vehicles require object detection with zero margin for error to navigate safely. The primary challenge was to accurately identify, classify, and isolate overlapping objects in a sparse, complex three-dimensional space (X, Y, Z coordinates), ensuring perfectly tight boundaries around target objects without including environmental noise or stray points.</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">Our Solution</span>
+          <span class="detail-val">Utilizing advanced labeling infrastructure, our annotation team executed a meticulous multi-view 3D bounding box strategy. By leveraging synchronous orthographic projections (Top, Side, and Front views), we isolated vehicles, pedestrians, and cyclists. Every single 3D cuboid was manually cross-checked across all views to align perfectly with the object's real-world volume. Strict Quality Assurance (QA) workflows were enforced to verify the orientation vector (Heading/Yaw) of every moving object.</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">The Deliverables</span>
+          <span class="detail-val">Fully annotated 3D frames — high-density spatial datasets with precise object tracking · Multi-class cuboids accurately separating vehicles, infrastructure, and vulnerable road users (pedestrians) · Production-ready formats exported as structured JSON, fully compatible with KITTI and custom machine learning pipelines.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

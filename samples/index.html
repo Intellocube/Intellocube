@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Samples — Intellocube</title>
+<meta name="description" content="Example data annotation projects by Intellocube spanning autonomous vehicles, healthcare, NLP, and geospatial AI."/>
+<link rel="icon" type="image/png" href="../assets/img/logo-header.png"/>
+<meta property="og:type" content="article"/>
+<meta property="og:title" content="Samples — Intellocube"/>
+<meta property="og:description" content="Example data annotation projects by Intellocube spanning autonomous vehicles, healthcare, NLP, and geospatial AI."/>
+<meta property="og:image" content="https://intellocube.com/assets/img/logo-header.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ===================== NEXA FONT (embedded) ===================== */
+@font-face {
+  font-family: 'Nexa';
+  src: url('../assets/fonts/Nexa-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nexa';
+  src: url('../assets/fonts/Nexa-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nexa', 'Nunito', 'Avenir Next', 'Trebuchet MS', sans-serif; background: #341B4B; color: #F0EAF8; min-height: 100vh; line-height: 1.6; }
+
+/* ── Top bar ── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(30,27,75,0.97); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0.9rem 5rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-left { display: flex; align-items: center; gap: 0.8rem; }
+.back-btn {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+  color: #fff; padding: 0.4rem 1rem; border-radius: 99px;
+  font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; transition: background 0.2s;
+  display: inline-block; text-decoration: none;
+}
+.back-btn:hover { background: rgba(255,255,255,0.12); }
+.sep { color: rgba(255,255,255,0.2); }
+.page-title { font-size: 0.8rem; font-weight: 700; color: #fff; }
+.topbar-tag { font-size: 0.76rem; letter-spacing: 0.15em; text-transform: uppercase; color: #E40E74; }
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(135deg, #402060 0%, #341B4B 100%);
+  padding: 5rem 5rem 4rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.hero h1 { font-size: clamp(2.4rem, 4vw, 3.5rem); font-weight: 800; color: #fff; margin-bottom: 1rem; line-height: 1.08; }
+.hero p { color: #DCD3EE; font-size: 1.08rem; line-height: 1.85; max-width: 640px; }
+
+/* ── Layout ── */
+.page-wrap { max-width: 1440px; margin: 0 auto; padding: 4rem 5rem; display: flex; flex-direction: column; gap: 5.5rem; }
+
+/* ── Featured case (LiDAR) ── */
+.featured {
+  display: grid; grid-template-columns: minmax(340px, 460px) 1fr; gap: 4rem; align-items: start;
+}
+.featured-img {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(57,151,211,0.18);
+  border-radius: 16px; padding: 1.4rem; position: sticky; top: 100px;
+}
+.featured-img img {
+  width: 100%; border-radius: 10px;
+  border: 1px solid rgba(57,151,211,0.18);
+  display: block; box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+}
+.featured-img img + img { margin-top: 1.2rem; }
+.img-caption { font-size: 0.85rem; color: rgba(255,255,255,0.42); margin-top: 0.7rem; line-height: 1.65; }
+.featured-body { display: flex; flex-direction: column; gap: 1.8rem; padding-top: 0.4rem; max-width: 64ch; }
+.tag {
+  display: inline-block; font-size: 0.76rem; letter-spacing: 0.16em;
+  text-transform: uppercase; border: 1px solid; border-radius: 99px;
+  padding: 0.32rem 0.9rem; width: fit-content; font-weight: 700;
+}
+.featured-body h2 { font-size: 1.9rem; font-weight: 800; color: #fff; line-height: 1.2; }
+.featured-body .lead { font-size: 1.05rem; color: #DCD3EE; line-height: 1.8; }
+.detail-block { display: flex; flex-direction: column; gap: 0.45rem; }
+.detail-lbl { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+.detail-val { font-size: 0.98rem; color: #DCD3EE; line-height: 1.85; }
+.divider { height: 1px; background: rgba(255,255,255,0.1); }
+.metric-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.metric {
+  background: rgba(57,151,211,0.08); border: 1px solid rgba(57,151,211,0.2);
+  border-radius: 10px; padding: 0.9rem 1.4rem;
+}
+.metric-val { font-size: 1.5rem; font-weight: 800; color: #3997D3; line-height: 1; }
+.metric-lbl { font-size: 0.73rem; color: #DCD3EE; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem; }
+
+/* ── Cases grid ── */
+.section-heading {
+  font-size: 1.18rem; font-weight: 800; color: #fff;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  padding-bottom: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 1.8rem;
+}
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+.card {
+  background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 1.8rem;
+  display: flex; flex-direction: column; gap: 0.9rem;
+  transition: background 0.2s, transform 0.25s, box-shadow 0.25s;
+  cursor: default;
+}
+.card:hover { background: rgba(255,255,255,0.05); transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
+.card h3 { font-size: 1.12rem; font-weight: 700; color: #fff; line-height: 1.3; }
+.card p { font-size: 0.92rem; color: #DCD3EE; line-height: 1.85; flex: 1; }
+.card-metric {
+  display: inline-block; font-size: 0.82rem; font-weight: 700;
+  padding: 0.3rem 0.85rem; border: 1px solid; border-radius: 99px;
+  width: fit-content; margin-top: auto;
+}
+
+@media (max-width: 900px) {
+  .topbar, .hero, .page-wrap { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .featured { grid-template-columns: 1fr; gap: 2rem; }
+  .featured-img { position: static; }
+  .featured-body { max-width: none; }
+  .hero { padding-top: 3rem; padding-bottom: 2.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back-btn" href="../index.html#case-studies">← Back to Site</a>
+    <span class="sep">·</span>
+    <span class="page-title">Samples</span>
+  </div>
+  <span class="topbar-tag">Intellocube · Data Annotation</span>
+</div>
+
+<div class="hero">
+  <h1>Samples</h1>
+  <p>Example annotation projects spanning autonomous vehicles, healthcare, NLP, e-commerce, and robotics — built to demonstrate our methodology and QA process.</p>
+  <p style="color:#C9B8E0;font-size:0.92rem;font-style:italic;margin-top:0.85rem;max-width:640px;">Due to client confidentiality agreements, we're unable to share our actual case studies. Everything below is a self-directed project using publicly available data, annotated in-house to show how we work.</p>
+</div>
+
+<div class="page-wrap">
+
+<div id="proj-lidar">
+    <p class="section-heading">Featured Project</p>
+    <div class="featured">
+      <div class="featured-img">
+        <img src="../assets/img/lidar-1.jpg"/>
+        <p class="img-caption">Global 3D viewport showcasing multi-class object detection and cuboid annotation on high-density point cloud frames.</p>
+        <img src="../assets/img/lidar-2.jpg"/>
+        <p class="img-caption">Orthographic multi-view alignment ensuring X, Y, Z dimensional accuracy and tight bounding box margins to eliminate background noise.</p>
+      </div>
+      <div class="featured-body">
+        <span class="tag" style="background:rgba(57,151,211,0.1);border-color:rgba(57,151,211,0.3);color:#3997D3;">Autonomous Vehicles</span>
+        <h2>High-Precision 3D LiDAR Point Cloud Annotation for Autonomous Driving Systems</h2>
+        <p class="lead">Annotating .pcd point cloud data with zero margin for error — accurate 3D object detection across sparse, complex three-dimensional space for autonomous vehicle perception stacks.</p>
+        <div class="divider"></div>
+        <div class="detail-block">
+          <span class="detail-lbl">The Challenge</span>
+          <span class="detail-val">Annotating 3D point cloud data (via .pcd files) presents unique spatial challenges compared to standard 2D images. Autonomous vehicles require object detection with zero margin for error to navigate safely. The primary challenge was to accurately identify, classify, and isolate overlapping objects in a sparse, complex three-dimensional space (X, Y, Z coordinates), ensuring perfectly tight boundaries around target objects without including environmental noise or stray points.</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">Our Solution</span>
+          <span class="detail-val">Utilizing advanced labeling infrastructure, our annotation team executed a meticulous multi-view 3D bounding box strategy. By leveraging synchronous orthographic projections (Top, Side, and Front views), we isolated vehicles, pedestrians, and cyclists. Every single 3D cuboid was manually cross-checked across all views to align perfectly with the object's real-world volume. Strict Quality Assurance (QA) workflows were enforced to verify the orientation vector (Heading/Yaw) of every moving object.</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">The Deliverables</span>
+          <span class="detail-val">Fully annotated 3D frames — high-density spatial datasets with precise object tracking · Multi-class cuboids accurately separating vehicles, infrastructure, and vulnerable road users (pedestrians) · Production-ready formats exported as structured JSON, fully compatible with KITTI and custom machine learning pipelines.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div id="proj-medical">
+    <p class="section-heading" style="border-color:rgba(228,14,116,0.2);">Medical Imaging Segmentation</p>
+    <div class="featured">
+
+      <!-- Images column -->
+      <div class="featured-img" style="display:flex;flex-direction:column;gap:1.2rem;border-color:rgba(228,14,116,0.18);">
+        <div>
+          <img src="../assets/img/medical-1.jpg" alt="MRI brain scan with Meningioma tumour annotation" style="width:100%;border-radius:10px;border:1px solid rgba(228,14,116,0.2);display:block;box-shadow:0 16px 40px rgba(0,0,0,0.4);"/>
+          <p class="img-caption">Image 1 — Coronal T1 POST MRI scan. Blue polygon: manually annotated Meningioma tumour lesion (TUMOR_LESION 3). The annotator isolated the tumour boundary using the polygon tool, excluding peripheral vasogenic edema, per our internal annotation guideline.</p>
+        </div>
+        <div>
+          <img src="../assets/img/medical-2.jpg" alt="MRI axial scan with congested sinus annotation" style="width:100%;border-radius:10px;border:1px solid rgba(228,14,116,0.2);display:block;box-shadow:0 16px 40px rgba(0,0,0,0.4);"/>
+          <p class="img-caption">Image 2 — Same patient, inferior axial slice. Teal polygon: manually annotated congested sinus region (CONGESTED_SINUS 4). Both scans are from the same multi-image MRI series, demonstrating multi-slice annotation consistency.</p>
+        </div>
+      </div>
+
+      <!-- Text column -->
+      <div class="featured-body">
+        <span class="tag" style="background:rgba(228,14,116,0.1);border-color:rgba(228,14,116,0.3);color:#E40E74;">Healthcare AI</span>
+        <h2>Medical Imaging Segmentation</h2>
+        <p class="lead">Pixel-level segmentation of radiology scans (CT, MRI, X-ray) demonstrating our polygon-based annotation and multi-slice QA workflow on publicly available imaging data.</p>
+        <div class="divider"></div>
+        <div class="detail-block">
+          <span class="detail-lbl">What You're Seeing</span>
+          <span class="detail-val">Two slices from the same coronal MRI brain series (MSB-00799). Image 1 shows a Meningioma tumour annotated with a blue filled polygon at the mid-brain level. Image 2 shows an inferior slice where a congested sinus region is annotated in teal. Both annotations were drawn manually using the polygon tool and cross-referenced against adjacent slices to ensure volumetric accuracy.</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">Annotation Type</span>
+          <span class="detail-val">Pixel-level polygon segmentation · Tumour boundary isolation · Multi-slice volumetric consistency checks</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">Annotation Rule</span>
+          <span class="detail-val">Annotators isolated the tumour core excluding peripheral vasogenic edema, per our internal annotation guideline. Each boundary was verified against adjacent slices for 3D volumetric continuity.</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">QA Standard</span>
+          <span class="detail-val">Dice Similarity Coefficient tracked per case — any score falling below the required threshold escalated to a senior annotator for re-review.</span>
+        </div>
+        </div>
+    </div>
+  </div>
+
+<div id="proj-aerial">
+    <p class="section-heading" style="border-color:rgba(74,222,128,0.2);">Aerial Property &amp; Rooftop Mapping</p>
+    <div class="featured">
+      <div class="featured-img" style="border-color:rgba(74,222,128,0.18);">
+        <img src="../assets/img/aerial-1.jpg"/>
+        <p class="img-caption">Manually annotated building footprint on a distorted drone orthomosaic — vertex points traced tightly to each rooftop corner and labeled by structure type.</p>
+      </div>
+      <div class="featured-body">
+        <span class="tag" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#4ADE80;">Geospatial / PropTech</span>
+        <h2>Aerial Drone Imagery Annotation for Property Intelligence</h2>
+        <p class="lead">Building footprint and property boundary annotation from raw drone orthomosaics, demonstrating a workflow suited to land-intelligence and underwriting use cases.</p>
+        <div class="divider"></div>
+        <div class="detail-block">
+          <span class="detail-lbl">The Challenge</span>
+          <span class="detail-val">Raw drone orthomosaics are stitched from hundreds of individual flight images, leaving warped edges, uneven lighting, and irregular canopy occlusion across each frame. The team needed to trace precise building footprints and distinguish primary residential structures from accessory buildings (garages, pool houses, sheds) despite these distortions — without access to clean, pre-rectified satellite imagery.</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">Our Solution</span>
+          <span class="detail-val">Annotators manually placed vertex points along each rooftop corner to build tight polygon outlines, cross-referencing shadow lines and eave edges to resolve occlusion from trees and overhangs. Each structure was individually labeled and classified (e.g. "Residential Building 1 (Manual)") to separate primary dwellings from secondary structures like pools and driveways, with orientation markers recorded for downstream mapping use.</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">The Deliverables</span>
+          <span class="detail-val">Geo-referenced building footprint polygons exported in GeoJSON / Shapefile format · Structure-level classification labels distinguishing residential, accessory, and hardscape features · QA-verified vertex accuracy for direct ingestion into GIS and property-underwriting pipelines.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div id="proj-rlhf">
+    <p class="section-heading" style="border-color:rgba(252,232,0,0.2);">RLHF Preference Dataset</p>
+    <div class="featured">
+      <div class="featured-img" style="border-color:rgba(252,232,0,0.18);">
+        <img src="../assets/img/rlhf-1.jpg"/>
+        <p class="img-caption">Side-by-side model comparison interface — annotators weigh Model A against Model B across a real prompt, select a preference tier, and record written justification for every judgment.</p>
+      </div>
+      <div class="featured-body">
+        <span class="tag" style="background:rgba(252,232,0,0.08);border-color:rgba(252,232,0,0.3);color:#FCE800;">Conversational AI</span>
+        <h2>RLHF Human Preference Evaluation Dataset</h2>
+        <p class="lead">A large set of human preference pairs across dozens of domains for LLM alignment — covering helpfulness, harmlessness, and factuality dimensions.</p>
+        <div class="divider"></div>
+        <div class="detail-block">
+          <span class="detail-lbl">The Challenge</span>
+          <span class="detail-val">Judging which of two model responses is "better" is inherently subjective, and preferences can vary widely across annotators and domains. The task required capturing nuanced human judgment — not just surface-level fluency or length — across dozens of different domains, while avoiding common annotator biases (favoring longer or more confident-sounding answers) and keeping judgments consistent at scale across a large volume of comparisons.</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">Our Solution</span>
+          <span class="detail-val">Annotators reviewed each prompt alongside both model responses side-by-side and selected one of four preference tiers — Model A much better, Model B much better, both acceptable, or both poor — then wrote a short written justification explaining the judgment for every single comparison. Inter-annotator agreement was tracked continuously using Cohen's Kappa; any batch scoring below the required agreement threshold triggered recalibration with the annotation team before work continued.</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">The Deliverables</span>
+          <span class="detail-val">A large set of labeled preference pairs spanning dozens of domains, each with a written justification for interpretability · Structured JSON output ready for RLHF and DPO fine-tuning pipelines · Full inter-annotator agreement scoring included alongside the dataset.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div id="proj-clinical">
+    <p class="section-heading" style="border-color:rgba(239,68,68,0.2);">Medical LLM Error Detection</p>
+    <div class="featured">
+      <div class="featured-img" style="border-color:rgba(239,68,68,0.18);">
+        <img src="../assets/img/clinical-1.png"/>
+        <p class="img-caption">Clinical safety review — a model response approving a contraindicated Metformin dosage for a patient with severe kidney disease is flagged as a Medical Error, with expert justification detailing the correct clinical guidance.</p>
+      </div>
+      <div class="featured-body">
+        <span class="tag" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.3);color:#EF4444;">Clinical AI Safety</span>
+        <h2>Medical LLM Error Detection &amp; Clinical Accuracy Evaluation</h2>
+        <p class="lead">Expert clinical review identifying dangerous medication and dosage errors in AI-generated medical advice, with detailed correct-practice justifications.</p>
+        <div class="divider"></div>
+        <div class="detail-block">
+          <span class="detail-lbl">The Challenge</span>
+          <span class="detail-val">Medical LLMs can produce fluent, confident-sounding advice that is nonetheless clinically dangerous — approving a contraindicated drug dosage, missing a critical interaction, or making a dosing calculation error. Catching these failures requires careful clinical reasoning, not just a fluency or coherence check, and reviewers must reason through patient-specific factors (renal function, comorbidities, lab values) exactly as a physician would before signing off on a response as safe.</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">Our Solution</span>
+          <span class="detail-val">Reviewers cross-referenced clinical guidelines to evaluate patient-scenario prompts and model responses, classifying each as Correct Medical Advice or Medical Error. Every flagged error required a detailed written justification citing the specific clinical guideline violated (e.g. eGFR-based contraindication thresholds) along with the correct recommended course of action, ensuring the dataset teaches not just what was wrong but why.</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-lbl">The Deliverables</span>
+          <span class="detail-val">Binary safety classification (correct vs. error) for every model response · Structured error categories covering contraindications, dosing errors, and drug interactions · Expert-written correct-practice justifications formatted for supervised fine-tuning and reward-model training to make medical LLMs safer before deployment.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
