@@ -698,6 +698,7 @@ section { padding: 6rem 4rem; }
   font-size: 0.8rem; color: var(--muted); font-weight: 500; font-family: 'Nunito', 'Avenir Next', 'Trebuchet MS', sans-serif;
 }
 .contact-form { display: flex; flex-direction: column; gap: 0.85rem; }
+.contact-form-fields { display: flex; flex-direction: column; gap: 0.85rem; }
 .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
 .form-group label { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 600; font-family: 'Nunito', 'Avenir Next', 'Trebuchet MS', sans-serif; }
 .form-group input,
@@ -1708,49 +1709,51 @@ nav.scrolled {
       </div>
     </div>
     <form class="contact-form" id="contact-form" action="https://formsubmit.co/info@intellocube.com" method="POST" onsubmit="handleSubmit(event)" aria-label="Project inquiry form" novalidate>
-      <input type="hidden" name="_subject" value="New project inquiry — Intellocube website"/>
-      <input type="hidden" name="_template" value="table"/>
-      <input type="hidden" name="_captcha" value="false"/>
-      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off"/>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="fname">First Name</label>
-          <input type="text" id="fname" name="fname" placeholder="First Name" required autocomplete="given-name" aria-required="true"/>
+      <div class="contact-form-fields" id="contact-form-fields">
+        <input type="hidden" name="_subject" value="New project inquiry — Intellocube website"/>
+        <input type="hidden" name="_template" value="table"/>
+        <input type="hidden" name="_captcha" value="false"/>
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off"/>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="fname" placeholder="First Name" required autocomplete="given-name" aria-required="true"/>
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="lname" placeholder="Last Name" required autocomplete="family-name" aria-required="true"/>
+          </div>
         </div>
         <div class="form-group">
-          <label for="lname">Last Name</label>
-          <input type="text" id="lname" name="lname" placeholder="Last Name" required autocomplete="family-name" aria-required="true"/>
+          <label for="email">Work Email</label>
+          <input type="email" id="email" name="email" placeholder="name@company.com" required autocomplete="email" aria-required="true"/>
         </div>
+        <div class="form-group">
+          <label for="service">Service Needed</label>
+          <select id="service" name="service" aria-label="Select service type">
+            <option value="">— Select a service —</option>
+            <option>Data Labeling</option>
+            <option>Image Annotation</option>
+            <option>Text Annotation</option>
+            <option>Transcription &amp; NLP</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="volume">Estimated Volume</label>
+          <select id="volume" name="volume" aria-label="Select asset volume">
+            <option value="">— Approx. asset count —</option>
+            <option>Under 10K</option>
+            <option>10K – 100K</option>
+            <option>100K – 1M</option>
+            <option>1M+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Project Details</label>
+          <textarea id="message" name="message" placeholder="Tell us about your data type, use case, timeline, and any special requirements…" aria-label="Project details"></textarea>
+        </div>
+        <button type="submit" class="btn-submit">Send Inquiry →</button>
       </div>
-      <div class="form-group">
-        <label for="email">Work Email</label>
-        <input type="email" id="email" name="email" placeholder="name@company.com" required autocomplete="email" aria-required="true"/>
-      </div>
-      <div class="form-group">
-        <label for="service">Service Needed</label>
-        <select id="service" name="service" aria-label="Select service type">
-          <option value="">— Select a service —</option>
-          <option>Data Labeling</option>
-          <option>Image Annotation</option>
-          <option>Text Annotation</option>
-          <option>Transcription &amp; NLP</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="volume">Estimated Volume</label>
-        <select id="volume" name="volume" aria-label="Select asset volume">
-          <option value="">— Approx. asset count —</option>
-          <option>Under 10K</option>
-          <option>10K – 100K</option>
-          <option>100K – 1M</option>
-          <option>1M+</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="message">Project Details</label>
-        <textarea id="message" name="message" placeholder="Tell us about your data type, use case, timeline, and any special requirements…" aria-label="Project details"></textarea>
-      </div>
-      <button type="submit" class="btn-submit">Send Inquiry →</button>
       <div id="form-success" role="alert" aria-live="assertive">
         ✓ Inquiry received! We'll be in touch within 4 hours.
       </div>
@@ -2305,6 +2308,7 @@ nav.scrolled {
 window.handleSubmit = function(e) {
   e.preventDefault();
   const form    = document.getElementById('contact-form');
+  const fields  = document.getElementById('contact-form-fields');
   const success = document.getElementById('form-success');
   const error   = document.getElementById('form-error');
   const btn     = form.querySelector('.btn-submit');
@@ -2317,8 +2321,8 @@ window.handleSubmit = function(e) {
   const ajaxAction = form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/');
 
   error.style.display = 'none';
-  form.style.opacity = '0.5';
-  form.style.pointerEvents = 'none';
+  fields.style.opacity = '0.5';
+  fields.style.pointerEvents = 'none';
   if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
 
   fetch(ajaxAction, {
@@ -2332,13 +2336,13 @@ window.handleSubmit = function(e) {
   })
   .then(data => {
     if (data && data.success === false) throw new Error(data.message || 'Submission rejected');
-    form.style.display = 'none';
+    fields.style.display = 'none';
     success.style.display = 'block';
   })
   .catch(err => {
     console.warn('Contact form submission failed:', err);
-    form.style.opacity = '1';
-    form.style.pointerEvents = 'auto';
+    fields.style.opacity = '1';
+    fields.style.pointerEvents = 'auto';
     if (btn) { btn.disabled = false; btn.textContent = 'Send Inquiry →'; }
     error.style.display = 'block';
   });
