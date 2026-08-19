@@ -1035,40 +1035,6 @@ nav.scrolled {
   mix-blend-mode: screen;
 }
 
-/* ── Cookie consent banner — injected by JS ── */
-#cookie-banner {
-  position: fixed; left: 1.2rem; right: 1.2rem; bottom: 1.2rem; z-index: 9998;
-  max-width: 640px; margin: 0 auto;
-  background: #2C1840; border: 1px solid var(--border);
-  border-radius: 14px; padding: 1.2rem 1.4rem;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-  display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.4rem;
-}
-#cookie-banner p {
-  flex: 1 1 260px; font-size: 0.85rem; line-height: 1.6; color: var(--muted);
-  font-family: 'Nunito', 'Avenir Next', 'Trebuchet MS', sans-serif;
-}
-#cookie-banner a { color: var(--cyan); text-decoration: underline; }
-.cookie-actions { display: flex; gap: 0.7rem; flex-shrink: 0; }
-.cookie-actions button {
-  padding: 0.55rem 1.2rem; border-radius: 99px; font-size: 0.8rem;
-  letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
-  font-family: 'Nunito', 'Avenir Next', 'Trebuchet MS', sans-serif;
-  cursor: pointer; transition: all 0.2s;
-}
-#cookie-decline {
-  background: transparent; border: 1px solid var(--border); color: var(--muted);
-}
-#cookie-decline:hover { border-color: rgba(255,255,255,0.4); color: var(--text); }
-#cookie-accept {
-  background: var(--magenta); border: 1px solid var(--magenta); color: #fff;
-}
-#cookie-accept:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(228,14,116,0.35); }
-@media (max-width: 600px) {
-  #cookie-banner { flex-direction: column; align-items: stretch; }
-  .cookie-actions { justify-content: flex-end; }
-}
-
 /* ====================================================
    PER-SECTION ANIMATION IDENTITIES
    ==================================================== */
@@ -1416,8 +1382,7 @@ nav.scrolled {
 
 <!-- ANALYTICS: off by default. To enable Google Analytics 4, create a
      property at analytics.google.com, copy your Measurement ID (looks
-     like "G-XXXXXXXXXX"), and paste it below in place of null. It will
-     only actually load after a visitor accepts the cookie banner. -->
+     like "G-XXXXXXXXXX"), and paste it below in place of null. -->
 <script>
   window.INTELLOCUBE_GA_ID = null;
 </script>
@@ -1855,22 +1820,26 @@ nav.scrolled {
     <li><a href="#case-studies">Work</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="privacy.html">Privacy Policy</a></li>
-    <li><a href="terms.html">Terms of Service</a></li>
   </ul>
 </footer>
 
 
 
-<!-- Three.js r128 — used for the PBR glass hero cube -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
+<!-- Three.js r142 — used for the PBR glass hero cube.
+     (Was r128, which predates MeshPhysicalMaterial's thickness/
+     attenuationColor/attenuationDistance transmission properties —
+     those were silently ignored and threw console warnings. r142
+     is the earliest cdnjs build that recognizes them, and stays
+     safely below r152/r155 where later Three.js releases change
+     default color management and rename physicallyCorrectLights.) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.142.0/three.min.js">
 
 
 </script>
 
 <script>
 /* ================================================================
-   INTELLOCUBE — PBR GLASS CMY CUBE  (Three.js r128)
+   INTELLOCUBE — PBR GLASS CMY CUBE  (Three.js r142)
    ================================================================
    SURFACE TREATMENT
    ─────────────────
@@ -1993,16 +1962,21 @@ nav.scrolled {
     return envRT.texture;
   }
 
+  /* NOTE: only the normal map is safe to share across cubes — it's a
+     plain CPU-backed DataTexture, so Three.js can re-upload it to any
+     WebGL context that needs it. The env map is a PMREM render-target
+     texture that lives entirely on the GPU inside whichever renderer
+     generated it; it CANNOT be reused by a different WebGLRenderer's
+     context (each canvas here gets its own context). The previous
+     version generated one shared env map with a disposable temp
+     renderer and handed it to every cube's own renderer — a mismatched
+     context that silently produced empty/near-black reflections and
+     transmission, which is why the cubes rendered dark. Each cube must
+     generate (and dispose) its own env map from its own renderer. */
   let sharedNormalMap = null;
-  let sharedEnvMap    = null;
-  function getSharedMaps() {
+  function getSharedNormalMap() {
     if (!sharedNormalMap) sharedNormalMap = makeNormalMap(128);
-    if (!sharedEnvMap) {
-      const tmp = new THREE.WebGLRenderer({ antialias: false, alpha: true });
-      sharedEnvMap = makeEnvMap(tmp);
-      tmp.dispose();
-    }
-    return { normalMap: sharedNormalMap, envMap: sharedEnvMap };
+    return sharedNormalMap;
   }
 
   /* ── Cube builder ─────────────────────────────────────────────
@@ -2038,7 +2012,9 @@ nav.scrolled {
   camera.position.set(0, 0.5, 5.5);
   camera.lookAt(0, 0, 0);
 
-  const { normalMap, envMap } = getSharedMaps();
+  const normalMap = getSharedNormalMap();
+  // Generated from THIS cube's own renderer — see note above getSharedNormalMap.
+  const envMap = makeEnvMap(renderer);
   scene.environment = envMap;
 
   scene.add(new THREE.AmbientLight(0xffffff, 0.4));
@@ -2068,7 +2044,11 @@ nav.scrolled {
   function glassMat(attenuationHex) {
     return new THREE.MeshPhysicalMaterial({
       color:               attenuationHex,
-      transmission:        0.72,
+      // Was 0.72 — tuned back when this Three.js build silently ignored
+      // `transmission`, so it never visibly affected the material. Now that
+      // it's actually applied, 0.72 renders very dark; 0.4 keeps a glassy,
+      // translucent look without crushing the CMY color.
+      transmission:        0.4,
       ior:                 1.52,
       thickness:           1.8,
       roughness:           0.06,
@@ -2279,6 +2259,7 @@ nav.scrolled {
     matCyan.dispose();
     matMagenta.dispose();
     matYellow.dispose();
+    envMap.dispose();
     renderer.dispose();
   }
 
@@ -2416,42 +2397,71 @@ try {
     '#services, #process, #about, #contact, #case-studies, #brand-scene, #cta-banner'
   );
 
-  if (!prefRM) {
-    /* ── Per-section whole-section entrance animations ──
-       Each section gets a completely different reveal style.
-       We assign a data-anim attribute and trigger it once.   */
-    const sectionAnims = {
-      'services':     'section-enter-flip',
-      'case-studies': 'section-enter-flip',
-      'process':      'section-enter-flip',
-      'about':        'section-enter-flip',
-      'contact':      'section-enter-flip',
-      'brand-scene':  'section-enter-flip',
-      'cta-banner':   'section-enter-flip',
-    };
+  /* ── Per-section whole-section entrance animations ──
+     Each section gets a distinct reveal style. This block runs
+     unconditionally (not gated on !prefRM): every section starts
+     at opacity:0 in the base CSS, and adding these classes is what
+     makes the content visible at all — not just decorative motion.
+     The global `prefers-reduced-motion` media query already
+     collapses the actual animation to ~0ms, so reduced-motion
+     users still get an (near-instant) reveal instead of a
+     permanently blank section. */
+  const sectionAnims = {
+    'services':     'section-enter-slide-left',
+    'case-studies': 'section-enter-wipe-right',
+    'process':      'section-enter-rise',
+    'about':        'section-enter-scale',
+    'contact':      'section-enter-flip',
+    'brand-scene':  'section-enter-fade',
+    'cta-banner':   'section-enter-flip',
+  };
 
-    const sectionObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        const el  = entry.target;
-        const id  = el.id;
-        const cls = sectionAnims[id];
-        if (cls) {
-          el.classList.add(cls);
-          // Fire .in-view for internal card/heading animations
-          el.classList.add('in-view');
-        }
+  const revealSection = el => {
+    if (el.classList.contains('in-view')) return;
+    const cls = sectionAnims[el.id];
+    if (cls) el.classList.add(cls);
+    // Fire .in-view for internal card/heading animations
+    el.classList.add('in-view');
+  };
+
+  const sectionObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      revealSection(entry.target);
+      sectionObserver.unobserve(entry.target);
+    });
+  }, { threshold: 0.08 });
+
+  sectionEls.forEach(el => sectionObserver.observe(el));
+
+  /* Safety net: a large/instant scroll (a deep link straight to a
+     #hash, keyboard Home/End, a fast trackpad flick) can jump past
+     a section faster than the browser ever reports it as
+     intersecting, leaving it stuck at opacity:0 forever since the
+     observer above only fires on an actual intersection crossing.
+     Catch anything already on-screen (or already scrolled past)
+     and reveal it directly. Self-removes once nothing is left. */
+  const catchUpSections = () => {
+    let remaining = 0;
+    sectionEls.forEach(el => {
+      if (el.classList.contains('in-view')) return;
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) {
+        revealSection(el);
         sectionObserver.unobserve(el);
-      });
-    }, { threshold: 0.08 });
+      } else {
+        remaining++;
+      }
+    });
+    if (remaining === 0) window.removeEventListener('scroll', catchUpSections);
+  };
+  window.addEventListener('load', catchUpSections);
+  window.addEventListener('scroll', catchUpSections, { passive: true });
+  setTimeout(catchUpSections, 300);
 
-    sectionEls.forEach(el => sectionObserver.observe(el));
-
+  if (!prefRM) {
     /* Cards inside sections — keep initial hidden so section
        animation reveals them cleanly as the section animates in */
-    const cardEls = document.querySelectorAll(
-      '.service-row, .case-tile, .process-step, .team-card, .contact-badge, .about-pillar'
-    );
     cardEls.forEach((el, i) => {
       el.style.opacity   = '0';
       el.style.transform = 'translateY(28px)';
@@ -2508,62 +2518,6 @@ try {
 
 }());
 } catch (e) { console.warn('Animation controller failed:', e); }
-
-/* ====================================================
-   COOKIE CONSENT + OPTIONAL ANALYTICS LOADER
-   Analytics only ever loads after explicit accept, and only if
-   window.INTELLOCUBE_GA_ID has been set to a real GA4 ID above.
-   ==================================================== */
-try {
-(function () {
-  const CONSENT_KEY = 'intellocube_cookie_consent';
-
-  function loadAnalytics() {
-    const id = window.INTELLOCUBE_GA_ID;
-    if (!id || window.__intellocubeGaLoaded) return;
-    window.__intellocubeGaLoaded = true;
-    const s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
-    document.head.appendChild(s);
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { window.dataLayer.push(arguments); };
-    window.gtag('js', new Date());
-    window.gtag('config', id, { anonymize_ip: true });
-  }
-
-  let saved;
-  try { saved = localStorage.getItem(CONSENT_KEY); } catch (e) { saved = null; }
-
-  if (saved === 'accepted') loadAnalytics();
-  if (saved) return; // choice already made — don't show the banner again
-
-  const banner = document.createElement('div');
-  banner.id = 'cookie-banner';
-  banner.setAttribute('role', 'dialog');
-  banner.setAttribute('aria-label', 'Cookie notice');
-  banner.innerHTML =
-    '<p>This site uses a minimal cookie to remember your choice here, plus optional analytics cookies if you accept. ' +
-    '<a href="privacy.html">Learn more</a>.</p>' +
-    '<div class="cookie-actions">' +
-    '<button type="button" id="cookie-decline">Decline</button>' +
-    '<button type="button" id="cookie-accept">Accept</button>' +
-    '</div>';
-  document.body.appendChild(banner);
-
-  const setChoice = (value) => {
-    try { localStorage.setItem(CONSENT_KEY, value); } catch (e) {}
-    banner.remove();
-  };
-  document.getElementById('cookie-accept').addEventListener('click', () => {
-    setChoice('accepted');
-    loadAnalytics();
-  });
-  document.getElementById('cookie-decline').addEventListener('click', () => {
-    setChoice('declined');
-  });
-}());
-} catch (e) { console.warn('Cookie banner failed:', e); }
 
 </script>
 
