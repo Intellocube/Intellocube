@@ -25,6 +25,14 @@
       '#iubenda-cs-banner .iubenda-banner-content a.iubenda-cs-cookie-policy-lnk {' +
       'color: #3997D3 !important; }';
     document.head.appendChild(s);
+    /* The banner's background/text color are set via an inline
+       style="...!important" attribute, which no stylesheet rule can
+       out-rank — only overwriting that same inline declaration wins. */
+    var content = document.querySelector('.iubenda-cs-content');
+    if (content) {
+      content.style.setProperty('background-color', '#2C1840', 'important');
+      content.style.setProperty('color', '#F0EAF8', 'important');
+    }
   }
   var applied = false;
   var mo = new MutationObserver(function () {
@@ -60,6 +68,13 @@
 }
 .iubenda-cs-opt-group-granular > *, .iubenda-cs-opt-group-consent > * {
   white-space: normal !important;
+}
+/* Iubenda auto-injects its own duplicate "Privacy Policy / Cookie
+   Policy / Terms and Conditions" footer block at the end of <body>;
+   the site's own footer already links to Privacy/Cookie Policy, so
+   hide the redundant one (and its Terms and Conditions link) here. */
+#iub-legal-footer {
+  display: none !important;
 }
 @font-face { font-family: 'Nexa'; src: url('assets/fonts/Nexa-Light.ttf') format('truetype'); font-weight: 300; font-display: swap; }
 @font-face { font-family: 'Nexa'; src: url('assets/fonts/Nexa-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
