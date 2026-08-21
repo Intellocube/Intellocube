@@ -34,13 +34,42 @@
       content.style.setProperty('color', '#F0EAF8', 'important');
     }
   }
-  var applied = false;
-  var mo = new MutationObserver(function () {
-    if (!applied && document.getElementById('iubenda-cs-banner')) {
-      applied = true;
-      applyIubendaTheme();
-      mo.disconnect();
+  /* The "Notice at collection / Your Privacy Choices" US-state-privacy
+     bar and its floating preferences icon — shown only to visitors
+     Iubenda detects as being in a US state with its own privacy law,
+     so it can't be tested from here. Styled by directly overwriting
+     inline styles (always wins over any stylesheet, no specificity
+     fight needed) rather than a <style> override. */
+  function applyUSPrivacyTheme() {
+    var widget = document.querySelector('.iub__us-widget');
+    if (widget) {
+      widget.style.setProperty('background-color', '#2C1840', 'important');
+      var wrapper = widget.querySelector('.iub__us-widget__wrapper');
+      if (wrapper) wrapper.style.setProperty('background-color', '#2C1840', 'important');
+      var links = widget.querySelectorAll('.iub__us-widget__link');
+      for (var i = 0; i < links.length; i++) {
+        links[i].style.setProperty('color', '#F0EAF8', 'important');
+        links[i].style.setProperty('font-family', '"Nexa", "Nunito", "Avenir Next", "Trebuchet MS", sans-serif', 'important');
+      }
     }
+    var icon = document.querySelector('.iubenda-tp-btn');
+    if (icon) {
+      icon.style.setProperty('background-color', '#E40E74', 'important');
+      icon.style.setProperty('color', '#fff', 'important');
+    }
+  }
+  var bannerApplied = false;
+  var uspApplied = false;
+  var mo = new MutationObserver(function () {
+    if (!bannerApplied && document.getElementById('iubenda-cs-banner')) {
+      bannerApplied = true;
+      applyIubendaTheme();
+    }
+    if (!uspApplied && (document.querySelector('.iub__us-widget') || document.querySelector('.iubenda-tp-btn'))) {
+      uspApplied = true;
+      applyUSPrivacyTheme();
+    }
+    if (bannerApplied && uspApplied) mo.disconnect();
   });
   mo.observe(document.documentElement, { childList: true, subtree: true });
 })();
