@@ -56,25 +56,31 @@
         links[i].style.setProperty('font-family', '"Nexa", "Nunito", "Avenir Next", "Trebuchet MS", sans-serif', 'important');
       }
     }
-    /* Floating preferences icon: purple/semi-transparent backdrop,
-       and strip the green keyhole graphic however it's rendered —
-       inline SVG fill, or a background-image icon (can't recolor a
-       baked-in image, so it's removed instead of guessed at). */
+    /* Floating preferences icon: purple/semi-transparent backdrop.
+       The green keyhole graphic's rendering mechanism is unknown (SVG
+       fill, an <img>, or a masked element using background-color as
+       its fill) since this widget can't be reproduced here, so every
+       descendant gets a brightness(0) invert(1) filter — that forces
+       any single-color icon to pure white regardless of its original
+       color or how it's drawn, without touching the button's own
+       purple background (the filter is applied to the icon graphic
+       elements, not to .iubenda-tp-btn itself). */
     var icon = document.querySelector('.iubenda-tp-btn');
     if (icon) {
       icon.style.setProperty('background-color', 'rgba(52,27,75,0.7)', 'important');
-      icon.style.setProperty('background-image', 'none', 'important');
       icon.style.setProperty('color', '#fff', 'important');
-      var iconGraphics = icon.querySelectorAll('svg, path, circle, rect, polygon, use');
-      for (var k = 0; k < iconGraphics.length; k++) {
-        iconGraphics[k].style.setProperty('fill', '#fff', 'important');
-        iconGraphics[k].style.setProperty('color', '#fff', 'important');
+      var iconChildren = icon.querySelectorAll('*');
+      for (var k = 0; k < iconChildren.length; k++) {
+        iconChildren[k].style.setProperty('fill', '#fff', 'important');
+        iconChildren[k].style.setProperty('color', '#fff', 'important');
+        iconChildren[k].style.setProperty('background-color', '#fff', 'important');
+        iconChildren[k].style.setProperty('filter', 'brightness(0) invert(1)', 'important');
       }
       if (!document.getElementById('iub-icon-theme-style')) {
         var iconStyle = document.createElement('style');
         iconStyle.id = 'iub-icon-theme-style';
         iconStyle.textContent =
-          '.iubenda-tp-btn::before, .iubenda-tp-btn::after { background-image: none !important; color: #fff !important; }';
+          '.iubenda-tp-btn::before, .iubenda-tp-btn::after { filter: brightness(0) invert(1) !important; color: #fff !important; }';
         document.head.appendChild(iconStyle);
       }
     }
