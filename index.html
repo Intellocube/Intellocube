@@ -2190,7 +2190,7 @@ nav.scrolled {
       const RADIUS = 400;
       prox = Math.max(0, 1 - dist / RADIUS);
 
-      tSpinSpeed = prefRM ? 0 : 0.006 + prox * 0.018;
+      tSpinSpeed = 0.006 + prox * 0.018;
       spinSpeed  = lerp(spinSpeed, tSpinSpeed, LERP);
 
       if (!dragging && dist < RADIUS) {
@@ -2213,18 +2213,18 @@ nav.scrolled {
       matYellow .emissive  = new THREE.Color(glow, glow, 0);
     }
 
-    if (!prefRM) {
-      if (dragging) {
-        cubeGroup.rotation.y = dragRotY;
-        cubeGroup.rotation.x = dragRotX;
-      } else {
-        rotY += spinSpeed;
-        rotX += spinSpeed * 0.55;
-        cubeGroup.rotation.y = rotY + tiltY;
-        cubeGroup.rotation.x = rotX + tiltX;
-      }
-      cubeGroup.position.y = Math.sin(elapsed * 1.9) * 0.22;
+    /* Cube spin always runs — it's decorative motion, not essential
+       UI movement, so it isn't gated behind prefers-reduced-motion. */
+    if (dragging) {
+      cubeGroup.rotation.y = dragRotY;
+      cubeGroup.rotation.x = dragRotX;
+    } else {
+      rotY += spinSpeed;
+      rotX += spinSpeed * 0.55;
+      cubeGroup.rotation.y = rotY + tiltY;
+      cubeGroup.rotation.x = rotX + tiltX;
     }
+    cubeGroup.position.y = Math.sin(elapsed * 1.9) * 0.22;
 
     if (!prefRM) {
       cLight.position.set(
