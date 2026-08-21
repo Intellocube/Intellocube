@@ -65,24 +65,24 @@
        color or how it's drawn, without touching the button's own
        purple background (the filter is applied to the icon graphic
        elements, not to .iubenda-tp-btn itself). */
+    /* Floating preferences icon: confirmed via live inspection that
+       the green keyhole is a background-image (a hardcoded SVG,
+       fill #1CC691) painted directly on .iubenda-tp-btn itself — it
+       has no child elements, just a hidden sr-only label. Replaced
+       with an equivalent keyhole SVG in the site's cyan instead of
+       Iubenda's green. */
     var icon = document.querySelector('.iubenda-tp-btn');
     if (icon) {
       icon.style.setProperty('background-color', 'rgba(52,27,75,0.7)', 'important');
+      icon.style.setProperty(
+        'background-image',
+        'url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2732%27%20height=%2732%27%20viewBox=%270%200%2032%2032%27%3E%3Ccircle%20cx=%2716%27%20cy=%2712%27%20r=%275%27%20fill=%27%233997D3%27/%3E%3Cpath%20d=%27M13%2016h6l2%2010H11z%27%20fill=%27%233997D3%27/%3E%3C/svg%3E)',
+        'important'
+      );
+      icon.style.setProperty('background-size', '60%', 'important');
+      icon.style.setProperty('background-position', 'center', 'important');
+      icon.style.setProperty('background-repeat', 'no-repeat', 'important');
       icon.style.setProperty('color', '#fff', 'important');
-      var iconChildren = icon.querySelectorAll('*');
-      for (var k = 0; k < iconChildren.length; k++) {
-        iconChildren[k].style.setProperty('fill', '#fff', 'important');
-        iconChildren[k].style.setProperty('color', '#fff', 'important');
-        iconChildren[k].style.setProperty('background-color', '#fff', 'important');
-        iconChildren[k].style.setProperty('filter', 'brightness(0) invert(1)', 'important');
-      }
-      if (!document.getElementById('iub-icon-theme-style')) {
-        var iconStyle = document.createElement('style');
-        iconStyle.id = 'iub-icon-theme-style';
-        iconStyle.textContent =
-          '.iubenda-tp-btn::before, .iubenda-tp-btn::after { filter: brightness(0) invert(1) !important; color: #fff !important; }';
-        document.head.appendChild(iconStyle);
-      }
     }
   }
   var bannerApplied = false;
