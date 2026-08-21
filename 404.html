@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<script type="text/javascript" src="https://embeds.iubenda.com/widgets/9fc8cffd-0754-4684-99a7-ac4836404e25.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
+<script type="text/javascript" src="https://embeds.iubenda.com/widgets/9fc8cffd-0754-4684-99a7-ac4836404e25.js"></script>
 <meta name="theme-color" content="#341B4B"/>
 <title>Page Not Found — Intellocube</title>
 <meta name="robots" content="noindex"/>
@@ -12,6 +12,22 @@
 <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
+/* Iubenda cookie banner — force-wrap so its content never exceeds
+   the viewport width; without this, an overflowing toggle row
+   forces the whole page's mobile layout viewport wider than the
+   device, zooming the entire site out. */
+.iubenda-cs-default-floating, .iubenda-cs-container, .iubenda-cs-content,
+.iubenda-cs-rationale, .iubenda-banner-content, .iubenda-granular-controls-container,
+.iubenda-cs-opt-group, .iubenda-cs-opt-group-custom, .iubenda-cs-opt-group-granular,
+.iubenda-cs-opt-group-consent, .iubenda-cs-small-margin-top {
+  max-width: 100vw !important;
+  width: auto !important;
+  box-sizing: border-box !important;
+  flex-wrap: wrap !important;
+}
+.iubenda-cs-opt-group-granular > *, .iubenda-cs-opt-group-consent > * {
+  white-space: normal !important;
+}
 @font-face { font-family: 'Nexa'; src: url('assets/fonts/Nexa-Light.ttf') format('truetype'); font-weight: 300; font-display: swap; }
 @font-face { font-family: 'Nexa'; src: url('assets/fonts/Nexa-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

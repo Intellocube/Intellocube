@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<script type="text/javascript" src="https://embeds.iubenda.com/widgets/9fc8cffd-0754-4684-99a7-ac4836404e25.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script type="text/javascript" src="https://embeds.iubenda.com/widgets/9fc8cffd-0754-4684-99a7-ac4836404e25.js"></script>
 <meta name="theme-color" content="#341B4B"/>
 <title>Intellocube — Precision Data Annotation</title>
 <meta name="description" content="Intellocube delivers high-accuracy data labeling and quality-assured training datasets for computer vision, NLP, and LLM teams — image, text, audio, and 3D annotation at scale."/>
@@ -33,6 +33,22 @@
   Then replace 'Nunito' with 'Nexa' in the --font-body variable below.
 -->
 <style>
+/* Iubenda cookie banner — force-wrap so its content never exceeds
+   the viewport width; without this, an overflowing toggle row
+   forces the whole page's mobile layout viewport wider than the
+   device, zooming the entire site out. */
+.iubenda-cs-default-floating, .iubenda-cs-container, .iubenda-cs-content,
+.iubenda-cs-rationale, .iubenda-banner-content, .iubenda-granular-controls-container,
+.iubenda-cs-opt-group, .iubenda-cs-opt-group-custom, .iubenda-cs-opt-group-granular,
+.iubenda-cs-opt-group-consent, .iubenda-cs-small-margin-top {
+  max-width: 100vw !important;
+  width: auto !important;
+  box-sizing: border-box !important;
+  flex-wrap: wrap !important;
+}
+.iubenda-cs-opt-group-granular > *, .iubenda-cs-opt-group-consent > * {
+  white-space: normal !important;
+}
 /* ===================== NEXA FONT (embedded) ===================== */
 @font-face {
   font-family: 'Nexa';
@@ -851,7 +867,7 @@ footer {
 }
 .footer-logo { font-family: 'Nexa', var(--font-body); font-weight: 700; font-size: 1.9rem; display: flex; align-items: flex-end; gap: 0.3rem; line-height: 1; }
 footer p { font-size: 0.85rem; color: var(--muted); font-weight: 500; font-family: 'Nunito', 'Avenir Next', 'Trebuchet MS', sans-serif; }
-.footer-links { display: flex; gap: 2rem; list-style: none; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 0.7rem 2rem; list-style: none; }
 .footer-links a { font-size: 0.85rem; color: var(--muted); transition: color 0.2s; font-weight: 600; font-family: 'Nunito', 'Avenir Next', 'Trebuchet MS', sans-serif; }
 .footer-links a:hover { color: var(--cyan); }
 
