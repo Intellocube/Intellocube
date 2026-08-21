@@ -103,6 +103,30 @@
       icon.style.setProperty('color', '#fff', 'important');
     }
   }
+  /* The detailed "Your Privacy Choices" panel opened via "Learn more"
+     — a separate Iubenda sub-widget (#purposes-content-container),
+     not part of #iubenda-cs-banner. Its background/text color are
+     also locked via an inline style="...!important" attribute, same
+     fix as the main banner: overwrite that same inline declaration. */
+  function applyPurposesPanelTheme() {
+    var panel = document.getElementById('purposes-content-container');
+    if (panel) {
+      panel.style.setProperty('background-color', '#2C1840', 'important');
+      panel.style.setProperty('color', '#F0EAF8', 'important');
+    }
+    if (!document.getElementById('iub-purposes-theme-style')) {
+      var s = document.createElement('style');
+      s.id = 'iub-purposes-theme-style';
+      s.textContent =
+        '#purposes-content-container, #purposes-content-container * { font-family: "Nexa", "Nunito", "Avenir Next", "Trebuchet MS", sans-serif !important; }' +
+        '#purposes-content-container h1, #purposes-content-container h2, #purposes-content-container h3,' +
+        '#purposes-content-container p, #purposes-content-container span, #purposes-content-container label,' +
+        '#purposes-content-container li { color: #F0EAF8 !important; }' +
+        '#purposes-content-container a { color: #3997D3 !important; }' +
+        '#purposes-content-container button { background: rgba(255,255,255,0.08) !important; color: #F0EAF8 !important; border-color: rgba(255,255,255,0.2) !important; }';
+      document.head.appendChild(s);
+    }
+  }
   var bannerApplied = false;
   var mo = new MutationObserver(function () {
     if (!bannerApplied && document.getElementById('iubenda-cs-banner')) {
@@ -119,6 +143,9 @@
   setInterval(function () {
     if (document.querySelector('.iub__us-widget') || document.querySelector('.iubenda-tp-btn')) {
       applyUSPrivacyTheme();
+    }
+    if (document.getElementById('purposes-content-container')) {
+      applyPurposesPanelTheme();
     }
   }, 1000);
 })();
