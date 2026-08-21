@@ -4,6 +4,39 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <script type="text/javascript" src="https://embeds.iubenda.com/widgets/9fc8cffd-0754-4684-99a7-ac4836404e25.js"></script>
+<script>
+/* Re-skin the Iubenda cookie banner to match the site's palette/fonts.
+   Iubenda's own rules use an #iubenda-cs-banner-prefixed selector with
+   high specificity, so ours must match that exactly (and be injected
+   after the banner renders) to win the cascade. */
+(function () {
+  function applyIubendaTheme() {
+    var s = document.createElement('style');
+    s.textContent =
+      '#iubenda-cs-banner .iubenda-banner-content:not(.iubenda-custom-content) *,' +
+      '#iubenda-cs-banner [class*=" iub"],' +
+      '#iubenda-cs-banner [class^="iub"] { font-family: "Nexa", "Nunito", "Avenir Next", "Trebuchet MS", sans-serif !important; }' +
+      '#iubenda-cs-banner .iubenda-cs-opt-group button.iubenda-cs-customize-btn {' +
+      'background: transparent !important; border: 1px solid rgba(255,255,255,0.09) !important; color: #F0EAF8 !important; }' +
+      '#iubenda-cs-banner .iubenda-cs-opt-group button.iubenda-cs-accept-btn,' +
+      '#iubenda-cs-banner .iubenda-cs-opt-group button.iubenda-cs-btn-primary {' +
+      'background: #E40E74 !important; color: #fff !important; }' +
+      '#iubenda-cs-banner .iubenda-banner-content a.iubenda-privacy-policy-link,' +
+      '#iubenda-cs-banner .iubenda-banner-content a.iubenda-cs-cookie-policy-lnk {' +
+      'color: #3997D3 !important; }';
+    document.head.appendChild(s);
+  }
+  var applied = false;
+  var mo = new MutationObserver(function () {
+    if (!applied && document.getElementById('iubenda-cs-banner')) {
+      applied = true;
+      applyIubendaTheme();
+      mo.disconnect();
+    }
+  });
+  mo.observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
 <meta name="theme-color" content="#341B4B"/>
 <title>Aerial Property & Rooftop Mapping — Samples — Intellocube</title>
 <meta name="description" content="Building footprint and property boundary annotation from raw drone orthomosaics."/>
