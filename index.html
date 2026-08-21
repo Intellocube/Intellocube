@@ -322,6 +322,7 @@ nav {
   margin-top: -1rem; margin-bottom: -1rem;
   display: flex; align-items: center; justify-content: center; gap: 1rem;
 }
+.hero-cube-canvas { display: block; max-width: 300px; }
 
 .cube-legend {
   display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
@@ -833,9 +834,11 @@ section { padding: 6rem 4rem; }
 }
 
 @media (max-width: 600px) {
-  .bs-c1, .bs-c3 { display: none; }
-  #brand-scene { min-height: 300px; }
+  #brand-scene { min-height: 340px; }
   .bs-title { font-size: clamp(2rem, 13vw, 9rem); }
+  #brand-scene .bs-box-lg { width: 130px; height: 130px; }
+  #brand-scene .bs-box-md { width: 90px; height: 90px; }
+  #brand-scene .bs-box-sm { width: 60px; height: 60px; }
 }
 
 /* ===================== FOOTER ===================== */
@@ -1242,9 +1245,9 @@ nav.scrolled {
 
 
 @media (max-width: 900px) {
-  nav { padding: 1rem 1.5rem; }
-  .nav-logo { font-size: 1.5rem; }
-  .nav-cta { padding: 0.5rem 1.1rem; font-size: 0.8rem; }
+  nav { padding: 0.9rem 1rem; }
+  .nav-logo { font-size: 1.25rem; }
+  .nav-cta { padding: 0.5rem 0.85rem; font-size: 0.72rem; white-space: nowrap; }
   .nav-hamburger { display: flex; }
   .nav-links {
     display: flex; flex-direction: column; gap: 0;
@@ -1261,7 +1264,8 @@ nav.scrolled {
   }
   .nav-links a::after { display: none; }
   #hero { padding: 7rem 1.5rem 4rem; }
-  .hero-cube-canvas { display: none; }
+  .hero-cube-canvas { max-width: 180px; min-width: 0; }
+  #hero-canvas-2, #hero-canvas-3 { display: none; }
   .hero-sub-under-cube { margin-top: 0.5rem; margin-bottom: 0.5rem; }
   .hero-scroll-indicator { display: none; }
   .hero-text { padding-left: 0; text-align: center; }
@@ -1275,10 +1279,11 @@ nav.scrolled {
   .footer-links { justify-content: center; }
   .process-steps { grid-template-columns: 1fr; gap: 1.25rem; }
   .process-step { padding: 1.8rem 1.5rem; }
-  .process-step::after { content: none; }
+  .process-step:not(:nth-child(3n))::after { content: none; }
   .services-list { grid-template-columns: 1fr; }
   .about-pillars { grid-template-columns: 1fr; gap: 2rem; }
-  .contact-cube-wrap { display: none; }
+  .contact-cube-wrap { min-height: 160px; margin-top: 1.2rem; }
+  .contact-cube-wrap .bs-box-lg { width: 170px; height: 170px; }
   .team-grid { grid-template-columns: 1fr; }
   #services .section-sub,
   #case-studies .section-sub {
@@ -1431,18 +1436,18 @@ nav.scrolled {
       <canvas id="hero-canvas" class="hero-cube-canvas"
         tabindex="0" role="img"
         aria-label="3D glass CMY cube — drag to rotate, move mouse near it to interact"
-        style="width:100%;max-width:300px;aspect-ratio:1;border-radius:16px;
-               display:block;cursor:grab;touch-action:none;"></canvas>
+        style="width:100%;aspect-ratio:1;border-radius:16px;
+               cursor:grab;touch-action:none;"></canvas>
       <canvas id="hero-canvas-2" class="hero-cube-canvas"
         tabindex="0" role="img"
         aria-label="3D glass CMY cube — drag to rotate, move mouse near it to interact"
-        style="width:100%;max-width:300px;aspect-ratio:1;border-radius:16px;
-               display:block;cursor:grab;touch-action:none;"></canvas>
+        style="width:100%;aspect-ratio:1;border-radius:16px;
+               cursor:grab;touch-action:none;"></canvas>
       <canvas id="hero-canvas-3" class="hero-cube-canvas"
         tabindex="0" role="img"
         aria-label="3D glass CMY cube — drag to rotate, move mouse near it to interact"
-        style="width:100%;max-width:300px;aspect-ratio:1;border-radius:16px;
-               display:block;cursor:grab;touch-action:none;"></canvas>
+        style="width:100%;aspect-ratio:1;border-radius:16px;
+               cursor:grab;touch-action:none;"></canvas>
     </div>
 
     <h1 class="hero-h1" id="hero-heading">
@@ -2275,35 +2280,39 @@ nav.scrolled {
     try { initCube('hero-canvas'); } catch (e) { console.warn('Cube 1 failed:', e); }
     try { initCube('hero-canvas-2'); } catch (e) { console.warn('Cube 2 failed:', e); }
     try { initCube('hero-canvas-3'); } catch (e) { console.warn('Cube 3 failed:', e); }
-
-    /* ── Decorative cubes — lazy WebGL, lightweight mode ──────
-       Same glass material/geometry as the hero cubes, minus
-       shadows and mouse interactivity. Each cluster of canvases
-       is only spun up while its section is on screen, and torn
-       down again once it scrolls away, to keep the total number
-       of live WebGL contexts low.                               */
-    function lazyCubeGroup(sectionSelector, canvasIds) {
-      const section = document.querySelector(sectionSelector);
-      if (!section) return;
-      let instances = null;
-      const io = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && !instances) {
-            instances = canvasIds
-              .map(id => { try { return initCube(id, { light: true }); } catch (e) { console.warn('Decorative cube failed:', e); return null; } })
-              .filter(Boolean);
-          } else if (!entry.isIntersecting && instances) {
-            instances.forEach(inst => inst.dispose());
-            instances = null;
-          }
-        });
-      }, { rootMargin: '200px 0px' });
-      io.observe(section);
-    }
-
-    lazyCubeGroup('#brand-scene', ['bs-canvas-1', 'bs-canvas-2', 'bs-canvas-3', 'bs-canvas-4', 'bs-canvas-5', 'bs-canvas-6']);
-    lazyCubeGroup('.contact-cube-wrap', ['bs-canvas-contact']);
+  } else {
+    /* Mobile shows a single hero cube (see .hero-cube-canvas mobile CSS) */
+    try { initCube('hero-canvas'); } catch (e) { console.warn('Cube 1 failed:', e); }
   }
+
+  /* ── Decorative cubes — lazy WebGL, lightweight mode ──────
+     Same glass material/geometry as the hero cubes, minus
+     shadows and mouse interactivity. Each cluster of canvases
+     is only spun up while its section is on screen, and torn
+     down again once it scrolls away, to keep the total number
+     of live WebGL contexts low. Runs on all screen sizes so the
+     decorative cubes aren't just blank canvases on mobile.      */
+  function lazyCubeGroup(sectionSelector, canvasIds) {
+    const section = document.querySelector(sectionSelector);
+    if (!section) return;
+    let instances = null;
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !instances) {
+          instances = canvasIds
+            .map(id => { try { return initCube(id, { light: true }); } catch (e) { console.warn('Decorative cube failed:', e); return null; } })
+            .filter(Boolean);
+        } else if (!entry.isIntersecting && instances) {
+          instances.forEach(inst => inst.dispose());
+          instances = null;
+        }
+      });
+    }, { rootMargin: '200px 0px' });
+    io.observe(section);
+  }
+
+  lazyCubeGroup('#brand-scene', ['bs-canvas-1', 'bs-canvas-2', 'bs-canvas-3', 'bs-canvas-4', 'bs-canvas-5', 'bs-canvas-6']);
+  lazyCubeGroup('.contact-cube-wrap', ['bs-canvas-contact']);
 
 }());
 
