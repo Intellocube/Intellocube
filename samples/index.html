@@ -56,10 +56,27 @@
         links[i].style.setProperty('font-family', '"Nexa", "Nunito", "Avenir Next", "Trebuchet MS", sans-serif', 'important');
       }
     }
+    /* Floating preferences icon: purple/semi-transparent backdrop,
+       and strip the green keyhole graphic however it's rendered —
+       inline SVG fill, or a background-image icon (can't recolor a
+       baked-in image, so it's removed instead of guessed at). */
     var icon = document.querySelector('.iubenda-tp-btn');
     if (icon) {
-      icon.style.setProperty('background-color', '#E40E74', 'important');
+      icon.style.setProperty('background-color', 'rgba(52,27,75,0.7)', 'important');
+      icon.style.setProperty('background-image', 'none', 'important');
       icon.style.setProperty('color', '#fff', 'important');
+      var iconGraphics = icon.querySelectorAll('svg, path, circle, rect, polygon, use');
+      for (var k = 0; k < iconGraphics.length; k++) {
+        iconGraphics[k].style.setProperty('fill', '#fff', 'important');
+        iconGraphics[k].style.setProperty('color', '#fff', 'important');
+      }
+      if (!document.getElementById('iub-icon-theme-style')) {
+        var iconStyle = document.createElement('style');
+        iconStyle.id = 'iub-icon-theme-style';
+        iconStyle.textContent =
+          '.iubenda-tp-btn::before, .iubenda-tp-btn::after { background-image: none !important; color: #fff !important; }';
+        document.head.appendChild(iconStyle);
+      }
     }
   }
   var bannerApplied = false;
