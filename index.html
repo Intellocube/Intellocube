@@ -80,8 +80,12 @@
        has no child elements, just a hidden sr-only label. Replaced
        with an equivalent keyhole SVG in the site's cyan instead of
        Iubenda's green. */
-    var icon = document.querySelector('.iubenda-tp-btn');
-    if (icon) {
+    /* querySelectorAll, not querySelector — a second copy of this
+       icon appears inside the "Your Privacy Choices" detail panel,
+       and only styling the first instance found left that one green. */
+    var icons = document.querySelectorAll('.iubenda-tp-btn');
+    for (var ic = 0; ic < icons.length; ic++) {
+      var icon = icons[ic];
       icon.style.setProperty('background-color', 'rgba(52,27,75,0.7)', 'important');
       icon.style.setProperty(
         'background-image',
@@ -95,26 +99,50 @@
     }
   }
   /* The detailed "Your Privacy Choices" panel opened via "Learn more"
-     — a separate Iubenda sub-widget (#purposes-content-container),
-     not part of #iubenda-cs-banner. Its background/text color are
-     also locked via an inline style="...!important" attribute, same
-     fix as the main banner: overwrite that same inline declaration. */
+     is built from several separate pieces, not one container. A full
+     scan for opaque light backgrounds while the panel was open found:
+       #purposes-container (.iubenda-modal-navigation) — the top
+         header bar (back button, "See full Privacy Policy") — this
+         one alone is inline-locked, style="...!important", same as
+         the main banner, so it needs the inline-overwrite trick.
+       .iubenda-iframe-top-container, .iubenda-cs-consent-buttons /
+       .purposes-buttons, .purposes-section-body-items,
+       .iubenda-iframe-footer — the button bar, content wrapper, and
+         footer bar — none of these had an inline style, so a normal
+         stylesheet rule with !important is enough to win.
+       .iub-btn-reject / .iub-btn-accept — the actual buttons. */
   function applyPurposesPanelTheme() {
     var panel = document.getElementById('purposes-content-container');
     if (panel) {
       panel.style.setProperty('background-color', '#2C1840', 'important');
       panel.style.setProperty('color', '#F0EAF8', 'important');
     }
+    var navHeader = document.getElementById('purposes-container');
+    if (navHeader) {
+      navHeader.style.setProperty('background-color', '#2C1840', 'important');
+    }
     if (!document.getElementById('iub-purposes-theme-style')) {
       var s = document.createElement('style');
       s.id = 'iub-purposes-theme-style';
       s.textContent =
-        '#purposes-content-container, #purposes-content-container * { font-family: "Nexa", "Nunito", "Avenir Next", "Trebuchet MS", sans-serif !important; }' +
+        '#purposes-content-container, #purposes-content-container *,' +
+        '#purposes-container, #purposes-container *,' +
+        '.iubenda-iframe-top-container, .iubenda-iframe-top-container *,' +
+        '.iubenda-iframe-footer, .iubenda-iframe-footer *' +
+        '{ font-family: "Nexa", "Nunito", "Avenir Next", "Trebuchet MS", sans-serif !important; }' +
+        '.iubenda-iframe-top-container, .iubenda-cs-consent-buttons, .purposes-buttons,' +
+        '.purposes-section-body-items, .iubenda-iframe-footer' +
+        '{ background-color: #2C1840 !important; }' +
         '#purposes-content-container h1, #purposes-content-container h2, #purposes-content-container h3,' +
         '#purposes-content-container p, #purposes-content-container span, #purposes-content-container label,' +
-        '#purposes-content-container li { color: #F0EAF8 !important; }' +
-        '#purposes-content-container a { color: #3997D3 !important; }' +
-        '#purposes-content-container button { background: rgba(255,255,255,0.08) !important; color: #F0EAF8 !important; border-color: rgba(255,255,255,0.2) !important; }';
+        '#purposes-content-container li,' +
+        '.purposes-section-body-items h1, .purposes-section-body-items h2, .purposes-section-body-items h3,' +
+        '.purposes-section-body-items p, .purposes-section-body-items span, .purposes-section-body-items label,' +
+        '.purposes-section-body-items li' +
+        '{ color: #F0EAF8 !important; }' +
+        '#purposes-content-container a, .purposes-section-body-items a { color: #3997D3 !important; }' +
+        '#purposes-content-container button, .iub-btn-consent, #purposes-container button, #purposes-container a' +
+        '{ background: rgba(255,255,255,0.08) !important; color: #F0EAF8 !important; border-color: rgba(255,255,255,0.2) !important; }';
       document.head.appendChild(s);
     }
   }
@@ -135,7 +163,7 @@
     if (document.querySelector('.iub__us-widget') || document.querySelector('.iubenda-tp-btn')) {
       applyUSPrivacyTheme();
     }
-    if (document.getElementById('purposes-content-container')) {
+    if (document.getElementById('purposes-content-container') || document.getElementById('purposes-container')) {
       applyPurposesPanelTheme();
     }
   }, 1000);
