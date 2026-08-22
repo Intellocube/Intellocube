@@ -99,52 +99,46 @@
     }
   }
   /* The detailed "Your Privacy Choices" panel opened via "Learn more"
-     is built from several separate pieces, not one container. A full
-     scan for opaque light backgrounds while the panel was open found:
-       #purposes-container (.iubenda-modal-navigation) — the top
-         header bar (back button, "See full Privacy Policy") — this
-         one alone is inline-locked, style="...!important", same as
-         the main banner, so it needs the inline-overwrite trick.
-       .iubenda-iframe-top-container, .iubenda-cs-consent-buttons /
-       .purposes-buttons, .purposes-section-body-items,
-       .iubenda-iframe-footer — the button bar, content wrapper, and
-         footer bar — none of these had an inline style, so a normal
-         stylesheet rule with !important is enough to win.
-       .iub-btn-reject / .iub-btn-accept — the actual buttons. */
+     is built from many separate pieces. A stylesheet rule with
+     !important still lost to Iubenda's own CSS for most of these
+     (same specificity problem solved for the main banner earlier —
+     their selectors are evidently more specific than a flat class
+     selector), so every piece here is fixed the reliable way: query
+     it directly and overwrite its inline style, which always wins
+     regardless of any external stylesheet's specificity. */
   function applyPurposesPanelTheme() {
-    var panel = document.getElementById('purposes-content-container');
-    if (panel) {
-      panel.style.setProperty('background-color', '#2C1840', 'important');
-      panel.style.setProperty('color', '#F0EAF8', 'important');
+    function setBg(selector, color) {
+      document.querySelectorAll(selector).forEach(function (el) {
+        el.style.setProperty('background-color', color, 'important');
+      });
     }
-    var navHeader = document.getElementById('purposes-container');
-    if (navHeader) {
-      navHeader.style.setProperty('background-color', '#2C1840', 'important');
+    function setColor(selector, color) {
+      document.querySelectorAll(selector).forEach(function (el) {
+        el.style.setProperty('color', color, 'important');
+      });
     }
-    if (!document.getElementById('iub-purposes-theme-style')) {
-      var s = document.createElement('style');
-      s.id = 'iub-purposes-theme-style';
-      s.textContent =
-        '#purposes-content-container, #purposes-content-container *,' +
-        '#purposes-container, #purposes-container *,' +
-        '.iubenda-iframe-top-container, .iubenda-iframe-top-container *,' +
-        '.iubenda-iframe-footer, .iubenda-iframe-footer *' +
-        '{ font-family: "Nexa", "Nunito", "Avenir Next", "Trebuchet MS", sans-serif !important; }' +
-        '.iubenda-iframe-top-container, .iubenda-cs-consent-buttons, .purposes-buttons,' +
-        '.purposes-section-body-items, .iubenda-iframe-footer' +
-        '{ background-color: #2C1840 !important; }' +
-        '#purposes-content-container h1, #purposes-content-container h2, #purposes-content-container h3,' +
-        '#purposes-content-container p, #purposes-content-container span, #purposes-content-container label,' +
-        '#purposes-content-container li,' +
-        '.purposes-section-body-items h1, .purposes-section-body-items h2, .purposes-section-body-items h3,' +
-        '.purposes-section-body-items p, .purposes-section-body-items span, .purposes-section-body-items label,' +
-        '.purposes-section-body-items li' +
-        '{ color: #F0EAF8 !important; }' +
-        '#purposes-content-container a, .purposes-section-body-items a { color: #3997D3 !important; }' +
-        '#purposes-content-container button, .iub-btn-consent, #purposes-container button, #purposes-container a' +
-        '{ background: rgba(255,255,255,0.08) !important; color: #F0EAF8 !important; border-color: rgba(255,255,255,0.2) !important; }';
-      document.head.appendChild(s);
+    function setFont(selector) {
+      document.querySelectorAll(selector).forEach(function (el) {
+        el.style.setProperty('font-family', '"Nexa", "Nunito", "Avenir Next", "Trebuchet MS", sans-serif', 'important');
+      });
     }
+    var purple = '#2C1840';
+    var text = '#F0EAF8';
+    var glass = 'rgba(255,255,255,0.08)';
+    setBg('#purposes-content-container, #purposes-container, .iubenda-iframe-top-container,' +
+      '.iub-consent-buttons, .iubenda-cs-consent-buttons, .purposes-buttons,' +
+      '.purposes-section-body, .purposes-items, .iubenda-iframe-footer', purple);
+    setBg('.iub-btn-consent, .iub-btn-reject, .iub-btn-accept', glass);
+    setColor('#purposes-content-container, #purposes-content-container *,' +
+      '#purposes-container, #purposes-container *,' +
+      '.iubenda-iframe-top-container *, .purposes-section-body *, .purposes-items *,' +
+      '.iubenda-iframe-footer *', text);
+    setFont('#purposes-content-container, #purposes-content-container *,' +
+      '#purposes-container, #purposes-container *,' +
+      '.iubenda-iframe-top-container, .iubenda-iframe-top-container *,' +
+      '.iubenda-iframe-footer, .iubenda-iframe-footer *');
+    document.querySelectorAll('#purposes-content-container a, .purposes-section-body a, .purposes-items a')
+      .forEach(function (el) { el.style.setProperty('color', '#3997D3', 'important'); });
   }
   var bannerApplied = false;
   var mo = new MutationObserver(function () {
